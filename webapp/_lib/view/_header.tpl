@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- <base href="{$site_root_path}" /> -->
   <meta charset="utf-8">
   <title>{if $controller_title}{$controller_title} | {/if}{$app_title}</title>
   <link rel="shortcut icon" type="image/x-icon" href="{$site_root_path}assets/img/favicon.png">
