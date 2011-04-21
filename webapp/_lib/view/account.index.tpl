@@ -59,7 +59,7 @@
               {/if}
             {/foreach}
           {else}
-            <a href="?m=manage" class="tt-button ui-state-default tt-button-icon-left ui-corner-all"><span class="ui-icon ui-icon-circle-arrow-w"></span>Back to plugins</a>
+            <a href="{$site_root_path}account/?m=manage" class="tt-button ui-state-default tt-button-icon-left ui-corner-all"><span class="ui-icon ui-icon-circle-arrow-w"></span>Back to plugins</a>
           {/if}
         </div>
         {if $body}
@@ -86,7 +86,8 @@
       <div class="thinkup-canvas clearfix">
         <div class="alpha omega grid_22 prefix_1 clearfix prepend_20 append_20">
         {include file="_usermessage.tpl"}
-          <form name="changepass" method="post" action="index.php?m=manage#instances" class="prepend_20 append_20">
+          <form name="changepass" method="post" action="{$site_root_path}account/index.php?m=manage#instances"
+                class="prepend_20 append_20">
             <div class="clearfix">
               <div class="grid_9 prefix_1 right"><label for="oldpass">Current password:</label></div>
               <div class="grid_9 left" style="overflow: hidden; margin: 0px 0px 10px 5px;">

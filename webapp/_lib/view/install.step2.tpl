@@ -30,7 +30,7 @@
     <img id="dart2" class="dart" alt="" src="{$site_root_path}assets/img/dart_wht.png">
     <div class="clearfix prepend_20 append_20">
       <div class="grid_22 push_1 clearfix">
-        <form class="input" name="form1" method="post" action="index.php?step=3">
+        <form class="input" name="form1" method="post" action="{$site_root_path}install/index.php?step=3">
             {include file="_usermessage.tpl"}
 
             <h2 class="clearfix step_title">Create Your ThinkUp Account</h2>

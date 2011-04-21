@@ -13,7 +13,8 @@
     {if ! $migrations[0]}
     <div class="success" style="margin: 0px 50px 0px 50px; padding: 0.5em 0.7em;">
     <!-- no upgrade needed -->
-    <p>Your database is up to date. <a href="{$site_root_path}">Continue using ThinkUp</a>, or <a href="backup.php">back up your database.</a></p>
+    <p>Your database is up to date. <a href="{$site_root_path}">Continue using ThinkUp</a>, or 
+        <a href="{$site_root_path}install/backup.php">back up your database.</a></p>
         {if $version_updated}
         <p>Your application database version has been updated to reflect the latest installed version of ThinkUp.</p>
         {/if}

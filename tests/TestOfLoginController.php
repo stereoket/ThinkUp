@@ -205,6 +205,7 @@ class TestOfLoginController extends ThinkUpUnitTestCase {
     public function testFailedLoginLockout() {
         $session = new Session();
         $cryptpass = $session->pwdcrypt("blah");
+        $config = Config::getInstance();
 
         $owner = array('id'=>2, 'email'=>'me2@example.com', 'pwd'=>$cryptpass, 'is_activated'=>1);
         $builder = FixtureBuilder::build('owners', $owner);
@@ -227,7 +228,8 @@ class TestOfLoginController extends ThinkUpUnitTestCase {
                 $this->assertEqual($owner->failed_logins, $i);
             } else {
                 $this->assertEqual("Inactive account. Account deactivated due to too many failed logins. ".
-                '<a href="forgot.php">Reset your password.</a>', $v_mgr->getTemplateDataItem('errormsg'));
+                '<a href="'.$config->getValue('site_root_path').'session/forgot.php">Reset your password.</a>',
+                        $v_mgr->getTemplateDataItem('errormsg'));
                 $owner_dao = new OwnerMySQLDAO();
                 $owner = $owner_dao->getByEmail('me2@example.com');
                 $this->assertEqual($owner->account_status, "Account deactivated due to too many failed logins");

@@ -32,6 +32,7 @@
 class LoginController extends ThinkUpController {
 
     public function control() {
+        $config = Config::getInstance();
         $this->setPageTitle('Log in');
         $this->setViewTemplate('session.login.tpl');
         $this->disableCaching();
@@ -62,7 +63,8 @@ class LoginController extends ThinkUpController {
                         return $this->generateView();
                     } elseif (!$owner->is_activated) {
                         $this->addErrorMessage("Inactive account. " . $owner->account_status. ". ".
-                        '<a href="forgot.php">Reset your password.</a>');
+                        '<a href="'.$config->getValue('site_root_path').
+                                'session/forgot.php">Reset your password.</a>');
                         return $this->generateView();
                     } elseif (!$session->pwdCheck($_POST['pwd'], $owner_dao->getPass($user_email))) { //failed login
                         if ($owner->failed_logins >= 10) {

@@ -28,7 +28,10 @@
 require_once 'init.php';
 $router = Router::getInstance();
 
-$router->map('/:n/:u/:v');
+$router->map('/post/:n/:t', array('controller' => 'PostController'), array('t' => '[0-9]+'));
+$router->map('/user/:n/:u', array('controller' => 'UserController', 'i' => SessionCache::get('user')));
+$router->map('/user/:u', array('controller' => 'UserController', 'i' => SessionCache::get('user'), 'n' => 'twitter'));
+$router->map('/:n/:u:v');
 $router->map('/');
 
 $router->execute();

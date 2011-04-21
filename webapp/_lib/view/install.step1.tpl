@@ -167,7 +167,8 @@
         <div class="clearfix">
           <div class="grid_10 prefix_8 left">
             <div class="next_step tt-button ui-state-default ui-priority-secondary ui-corner-all">
-              <a href="index.php?step=2" style="color:black" id="nextstep">Next Step &raquo;</a>
+              <a href="{$site_root_path}install/index.php?step=2" style="color:black"
+                 id="nextstep">Next Step &raquo;</a>
             </div>
           </div>
         </div>

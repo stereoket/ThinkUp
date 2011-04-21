@@ -6,7 +6,7 @@
 
         <textarea cols="120" rows="25">{$config_file_contents}</textarea><br>
         
-        <form name="form1" class="input" method="post" action="index.php?step=3">
+        <form name="form1" class="input" method="post" action="{$site_root_path}install/index.php?step=3">
         {foreach from=$_POST key=k item=v}
            <input type="hidden" name="{$k}" value="{$v}" />
         {/foreach}
