@@ -329,10 +329,10 @@ abstract class ThinkUpController {
      */
     public function go() {
         try {
-            $this->initalizeApp();
+            $classname = get_class($this);
+            self::initializeApp($classname);
 
             // are we in need of a database migration?
-            $classname = get_class($this);
             if ($classname != 'InstallerController' && $classname != 'BackupController' &&
             UpgradeController::isUpgrading( $this->isAdmin(), $classname) ) {
                 $this->setViewTemplate('install.upgradeneeded.tpl');
@@ -386,36 +386,39 @@ abstract class ThinkUpController {
      * Load config file and required plugins
      * @throws Exception
      */
-    private function initalizeApp() {
-        $classname = get_class($this);
-        if ($classname != "InstallerController") {
-            //Initialize config
-            $config = Config::getInstance();
-            if ($config->getValue('timezone')) {
-                date_default_timezone_set($config->getValue('timezone'));
-            }
-            if ($config->getValue('debug')) {
-                ini_set("display_errors", 1);
-                ini_set("error_reporting", E_ALL);
-            }
-            if($classname != "BackupController") {
-                //Init plugins
-                $pdao = DAOFactory::getDAO('PluginDAO');
-                $active_plugins = $pdao->getActivePlugins();
-                Utils::defineConstants();
-                foreach ($active_plugins as $ap) {
-                    //add plugin's model and controller folders as Loader paths here
-                    Loader::addPath(THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name."/model/");
-                    Loader::addPath(THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name.
-                    "/controller/");
-                    //require the main plugin registration file here
-                    if ( file_exists(
-                    THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name."/controller/".$ap->folder_name.".php")) {
-                        require_once THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name."/controller/".$ap->folder_name.
-                        ".php";
+    public static function initializeApp($classname) {
+        if (!defined('THINKUP_INITIALIZED')) {
+            if ($classname != "InstallerController") {
+                //Initialize config
+                $config = Config::getInstance();
+                if ($config->getValue('timezone')) {
+                    date_default_timezone_set($config->getValue('timezone'));
+                }
+                if ($config->getValue('debug')) {
+                    ini_set("display_errors", 1);
+                    ini_set("error_reporting", E_ALL);
+                }
+                if($classname != "BackupController") {
+                    //Init plugins
+                    $pdao = DAOFactory::getDAO('PluginDAO');
+                    $active_plugins = $pdao->getActivePlugins();
+                    Utils::defineConstants();
+                    foreach ($active_plugins as $ap) {
+                        //add plugin's model and controller folders as Loader paths here
+                        Loader::addPath(THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name."/model/");
+                        Loader::addPath(THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name.
+                        "/controller/");
+                        //require the main plugin registration file here
+                        if ( file_exists(
+                        THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name."/controller/".$ap->folder_name.".php")) {
+                            require_once THINKUP_WEBAPP_PATH.'plugins/'.$ap->folder_name."/controller/".
+                                    $ap->folder_name.".php";
+                        }
                     }
                 }
             }
+            
+            define('THINKUP_INITIALIZED', true);
         }
     }
 

@@ -32,7 +32,9 @@ class Router {
      * The default controller to use for page requests.
      * @var string
      */
-    private static $default_controller = 'DashboardController';
+    private $default_controller = 'DashboardController';
+
+    private $_404_controller = '404Controller';
 
     /**
      * The singletone instance of this class.
@@ -59,28 +61,39 @@ class Router {
      * The request URI of the page request as found in $_SERVER['REQUEST_URI']
      * @var string
      */
-    public $request_uri;
+    private $request_uri;
 
     /**
      * The array of Route objects that will be used to match a URL to a controller.
      * @var array
      */
-    public $routes = array();
+    private $routes = array();
 
     /**
      * A string containing the class name of the controller to use for this page load.
      * This variable will be null if none of the Routes matches the request URL.
      * @var string
      */
-    public $controller;
+    private $controller;
 
     /**
      * An array of parameters for the matched route. This array will be null if a Route
      * does not match the current URL.
      * @var array
      */
-    public $params;
-    public $route_found = false;
+    private $params;
+
+    /**
+     * Whether or not a valid route has been found for the current path.
+     * @var bool
+     */
+    private $route_found = false;
+
+    /**
+     * Whether or not the execute function has been run.
+     * @var bool
+     */
+    private $executed = false;
 
     private function __construct() {
         $request = $_SERVER['REQUEST_URI'];
@@ -153,16 +166,12 @@ class Router {
         }
     }
 
-    private function set_route($route) {
+    private function setRoute($route) {
         $this->route_found = true;
-        $params = $route->params;
-        $this->controller = $params['controller'];
-        unset($params['controller']);
-        $this->params = array_merge($params, $_GET);
-        $_GET = $this->params;
-
-        if (empty($this->controller))
-            $this->controller = self::$default_controller;
+        $this->controller = isset($route->params['controller']) ?
+                $route->params['controller'] : $this->default_controller;
+        unset($route->params['controller']);
+        $_GET = array_merge($route->params, $_GET);
     }
 
     /**
@@ -170,12 +179,37 @@ class Router {
      * request URI is found. When a match is found, this object's controller and params
      * member variables will be set to whatever the Route has defined them to be.
      */
-    public function execute() {
+    private function execute() {
         foreach ($this->routes as $route) {
             if ($route->is_matched) {
-                $this->set_route($route);
+                $this->setRoute($route);
+                $this->executed = true;
                 break;
             }
+        }
+    }
+
+    /**
+     * Runs the router matching and returns the appropriate controller for the URI. If no match is found or the
+     * controller class specified does not exist, the default 404 controller is returned.
+     *
+     * This is only intended to be run in the router.php file. Running it anywhere else is very likely to break things.
+     * 
+     * @return str A controller class string.
+     */
+    public function getController() {
+        if (!$this->executed) {
+            $this->execute();
+        }
+
+        if ($this->route_found) {
+            if (class_exists($this->controller)) {
+                return $this->controller;
+            } else {
+                return $this->_404_controller;
+            }
+        } else {
+            return $this->_404_controller;
         }
     }
 

@@ -26,23 +26,6 @@
  * @copyright 2009-2011 Sam Rose
  */
 require_once 'init.php';
-$router = Router::getInstance();
 
-$router->map('/post/:n/:t', array('controller' => 'PostController'), array('t' => '[0-9]+'));
-$router->map('/user/:n/:u', array('controller' => 'UserController', 'i' => SessionCache::get('user')));
-$router->map('/user/:u', array('controller' => 'UserController', 'i' => SessionCache::get('user'), 'n' => 'twitter'));
-$router->map('/:n/:u:v');
-$router->map('/');
-
-$router->execute();
-
-if (class_exists($router->controller)) {
-    $controller = new $router->controller();
-    if (is_a($controller, 'ThinkUpController')) {
-        echo $controller->go();
-    } else {
-        // controller incorrect type
-    }
-} else {
-    // controller class does not exist
-}
+$controller = new RouterController();
+echo $controller->go();
